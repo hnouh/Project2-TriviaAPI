@@ -6,8 +6,7 @@ import random
 
 from models import setup_db, Question, Category
 
-QUESTIONS_PER_PAGE = 10
-CATEGORY_PER_PAGE = 10
+QUESTIONS_PER_PAGE = 10 
 
 def paginate_questions(request, selection):
   page =request.args.get('page',1,type=int)
@@ -18,16 +17,6 @@ def paginate_questions(request, selection):
   current_questions= questions[start:end]
 
   return current_questions
-
-def paginate_categories(request, selection):
-  page =request.args.get('page',1,type=int)
-  start = (page-1) * CATEGORY_PER_PAGE
-  end = start + CATEGORY_PER_PAGE
-
-  categories = [category.format() for category in selection]
-  current_categories= categories[start:end]
-
-  return current_categories
 
 def create_app(test_config=None):
   # create and configure the app
@@ -57,16 +46,15 @@ def create_app(test_config=None):
   '''
   @app.route('/categories')
   def get_categories():
-    selection = Category.query.order_by(Category.id).all()
-    current_categories = paginate_categories(request,selection)
+    categories = Category.query.all()
+    current_categories = {category.id: category.type for category in categories}
 
     if len(current_categories)==0:
       abort(404)
 
     return jsonify({
       'success':True,
-      'categories':current_categories,
-      # 'total_categories':len(Category.query.all())
+      'categories':current_categories 
     })
 
   '''
@@ -86,8 +74,8 @@ def create_app(test_config=None):
     selection = Question.query.order_by(Question.id).all()
     current_questions = paginate_questions(request,selection)
 
-    selection2 = Category.query.order_by(Category.id).all()
-    current_categories = paginate_categories(request,selection2)
+    categories = Category.query.all()
+    current_categories = {category.id: category.type for category in categories}
 
     if len(current_questions)==0:
       abort(404)
@@ -96,8 +84,7 @@ def create_app(test_config=None):
       'success':True,
       'questions':current_questions,
       'total_questions':len(Question.query.all()),
-      'categories':current_categories,
-      # 'current_category':
+      'categories':current_categories
     })
 
   '''
@@ -122,8 +109,7 @@ def create_app(test_config=None):
       return jsonify({
         'success':True,
         'deleted':question_id,
-        'questions':current_questions
-        # 'total_questions':len(Question.query.all())
+        'questions':current_questions 
       })
 
     except:
@@ -185,13 +171,16 @@ def create_app(test_config=None):
     selection = Question.query.filter(Question.question.ilike(search)).all()
     current_questions = paginate_questions(request,selection)
 
+    selection2 = Category.query.filter(Question.question.ilike(search)).join(Question, Question.category==Category.id)
+    current_categories = {category.id: category.type for category in selection2}
+    
     if len(current_questions)==0:
       abort(404)
 
     return jsonify({
       'success':True,
       'questions':current_questions,
-      'total_questions':len(Question.query.all()),
+      'total_questions':len(current_questions),
       'categories':current_categories,
       # 'current_category':
     }) 
@@ -237,6 +226,31 @@ def create_app(test_config=None):
   one question at a time is displayed, the user is allowed to answer
   and shown whether they were correct or not.
   '''
+  # @app.route('/quizzes/<int:quizCategory>&<string:previousQuestions>', methods=['POST'])
+  # def create_quiz(quizCategory,previousQuestions):
+  #   rand = random.randrange(0, Question.query.count()) 
+  #   row = Question.query[rand]
+
+  #   # selection = Question.query.order_by(Question.id).all()
+  #   # current_questions = paginate_questions(request,selection)
+  #   try:
+  #     category = Category.query.filter(Category.id==quizCategory).one_or_none()
+
+  #     if category is None:
+  #       abort(404) 
+
+  #     selection2 = Category.query.order_by(Category.id).all()
+  #     current_categories = paginate_categories(request,selection2)
+
+  #     else:
+  #       return jsonify({
+  #         'success':True,
+  #         'previousQuestions':row,
+  #         'quizCategory':current_categories,
+          
+  #       })
+    
+    
 
   '''
   @TODO:
