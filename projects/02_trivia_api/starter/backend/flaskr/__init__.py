@@ -181,8 +181,7 @@ def create_app(test_config=None):
       'success':True,
       'questions':current_questions,
       'total_questions':len(current_questions),
-      'categories':current_categories,
-      # 'current_category':
+      'current_category':current_categories
     }) 
 
   '''
@@ -226,31 +225,46 @@ def create_app(test_config=None):
   one question at a time is displayed, the user is allowed to answer
   and shown whether they were correct or not.
   '''
-  # @app.route('/quizzes/<int:quizCategory>&<string:previousQuestions>', methods=['POST'])
-  # def create_quiz(quizCategory,previousQuestions):
-  #   rand = random.randrange(0, Question.query.count()) 
-  #   row = Question.query[rand]
+  @app.route('/quizzes', methods=['POST'])
+  def new_quiz():
+    # rand = random.randrange(0, Question.query.count()) 
+    # row = Question.query[rand]
+    body= request.get_json()
+    whichCategory = body.get('quizCategory') 
+    previousQuestions = body.get('previousQuestions')  
 
-  #   # selection = Question.query.order_by(Question.id).all()
-  #   # current_questions = paginate_questions(request,selection)
-  #   try:
-  #     category = Category.query.filter(Category.id==quizCategory).one_or_none()
+    # try:
+    if(whichCategory==0):
+      print("selection")
+      # category = Category.query.filter(Category.id==category_id).one_or_none()
+      selection = Question.query.all()
+      current_questions = paginate_questions(request,selection)
 
-  #     if category is None:
-  #       abort(404) 
+      return jsonify({
+        'success':True,
+        'question':current_questions,
+        'total_questions':len(selection),
+        # 'current_category':category.type
+      })
 
-  #     selection2 = Category.query.order_by(Category.id).all()
-  #     current_categories = paginate_categories(request,selection2)
+    elif whichCategory is None:
+      abort(404)
 
-  #     else:
-  #       return jsonify({
-  #         'success':True,
-  #         'previousQuestions':row,
-  #         'quizCategory':current_categories,
-          
-  #       })
-    
-    
+    else:
+      category = Category.query.filter(Category.id==whichCategory).one_or_none()
+      selection = Question.query.filter(Question.category==whichCategory).all()
+      current_questions = paginate_questions(request,selection)
+      print("selection2")
+
+      return jsonify({
+        'success':True,
+        'questions':current_questions,
+        'total_questions':len(Question.query.filter(Question.category==whichCategory).all()),
+        # 'current_category':category.type
+      })
+
+    # except:
+    #   abort(422)
 
   '''
   @TODO:
