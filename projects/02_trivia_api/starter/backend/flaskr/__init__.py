@@ -268,7 +268,7 @@ def create_app(test_config=None):
       })
 
       rand = random.randrange(1, len(selection),1) 
-      # if(nan(rand)):
+      if(rand=list index out of range):
 
       row = current_questions[rand]
 
