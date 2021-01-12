@@ -226,41 +226,55 @@ def create_app(test_config=None):
   and shown whether they were correct or not.
   '''
   @app.route('/quizzes', methods=['POST'])
-  def new_quiz():
-    # rand = random.randrange(0, Question.query.count()) 
-    # row = Question.query[rand]
+  def new_quiz(): 
     body= request.get_json()
     whichCategory = body.get('quizCategory') 
-    previousQuestions = body.get('previousQuestions')  
-
+    previousQuestions = body.get('previousQuestions')   
     # try:
-    if(whichCategory==0):
-      print("selection")
-      # category = Category.query.filter(Category.id==category_id).one_or_none()
-      selection = Question.query.all()
+      #get questions for specific category
+    if(body.get('quizCategory') !=0):
+      category = Category.query.filter(Category.id==whichCategory).one_or_none()
+      selection = Question.query.filter(Question.category==whichCategory).all()
       current_questions = paginate_questions(request,selection)
 
-      return jsonify({
+      #not found questions for this category
+      if (len(selection)==0):
+        return jsonify({
         'success':True,
-        'question':current_questions,
-        'total_questions':len(selection),
-        # 'current_category':category.type
+        'questions':'no questions added yet'
+        })
+
+      rand = random.randrange(1, len(selection),1) 
+      row = current_questions[rand]
+
+      return jsonify({
+        'success':True, 
+        'questions':row
       })
 
     elif whichCategory is None:
       abort(404)
 
-    else:
-      category = Category.query.filter(Category.id==whichCategory).one_or_none()
-      selection = Question.query.filter(Question.category==whichCategory).all()
+    # All categories
+    else: 
+      selection = Question.query.all()
       current_questions = paginate_questions(request,selection)
-      print("selection2")
+
+      # no questions added 
+      if (len(selection)==0):
+        return jsonify({
+        'success':True,
+        'questions':'no questions added yet'
+      })
+
+      rand = random.randrange(1, len(selection),1) 
+      # if(nan(rand)):
+
+      row = current_questions[rand]
 
       return jsonify({
         'success':True,
-        'questions':current_questions,
-        'total_questions':len(Question.query.filter(Question.category==whichCategory).all()),
-        # 'current_category':category.type
+        'question':row
       })
 
     # except:
