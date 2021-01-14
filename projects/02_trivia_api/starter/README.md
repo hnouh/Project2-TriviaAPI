@@ -291,8 +291,8 @@ action painting?"
 The awesome team at Udacity and all of the classmate, soon to be full stack extraordinaires! 
 
 ##### References
-https://stackoverflow.com/questions/60805/getting-random-row-through-sqlalchemy/14906244
-https://stackoverflow.com/questions/11902458/i-want-to-exception-handle-list-index-out-of-range
-https://www.geeksforgeeks.org/type-casting-in-python-implicit-and-explicit-with-examples/
-https://stackoverflow.com/questions/9755538/how-do-i-create-a-list-of-random-numbers-without-duplicates
-https://www.geeksforgeeks.org/python-random-sample-function/
+https://stackoverflow.com/questions/60805/getting-random-row-through-sqlalchemy/14906244<br>
+https://stackoverflow.com/questions/11902458/i-want-to-exception-handle-list-index-out-of-range<br>
+https://www.geeksforgeeks.org/type-casting-in-python-implicit-and-explicit-with-examples/<br>
+https://stackoverflow.com/questions/9755538/how-do-i-create-a-list-of-random-numbers-without-duplicates<br>
+https://www.geeksforgeeks.org/python-random-sample-function/<br>
