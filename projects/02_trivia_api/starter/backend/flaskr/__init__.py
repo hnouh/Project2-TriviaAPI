@@ -171,7 +171,8 @@ def create_app(test_config=None):
     selection = Question.query.filter(Question.question.ilike(search)).all()
     current_questions = paginate_questions(request,selection)
 
-    selection2 = Category.query.filter(Question.question.ilike(search)).join(Question, Question.category==Category.id)
+    selection2 = Category.query.filter(Question.question.ilike(search))
+    # .join(Question, Question.category==Category.id)
     current_categories = {category.id: category.type for category in selection2}
     
     if len(current_questions)==0:
@@ -196,7 +197,7 @@ def create_app(test_config=None):
   def category_questions(category_id):
     try:
       category = Category.query.filter(Category.id==category_id).one_or_none()
-      selection = Question.query.filter(Question.category==category_id).all()
+      selection = Question.query.filter(Question.category==str(category_id)).all()
       current_questions = paginate_questions(request,selection)
       
       if category_id is None:
@@ -206,7 +207,7 @@ def create_app(test_config=None):
         return jsonify({
           'success':True,
           'questions':current_questions,
-          'total_questions':len(Question.query.filter(Question.category==category_id).all()),
+          'total_questions':len(selection),
           'current_category':category.type
         })
 
@@ -224,36 +225,48 @@ def create_app(test_config=None):
   TEST: In the "Play" tab, after a user selects "All" or a category,
   one question at a time is displayed, the user is allowed to answer
   and shown whether they were correct or not.
-  '''
+  '''    
+
+
+#   return current_questions
   @app.route('/quizzes', methods=['POST'])
   def new_quiz(): 
     body= request.get_json()
-    whichCategory = body.get('quizCategory') 
-    previousQuestions = body.get('previousQuestions')   
+    whichCategory = body.get('quiz_category') 
+    previousQuestions = body.get('previous_questions') 
     # try:
       #get questions for specific category
-    if(body.get('quizCategory') !=0):
-      category = Category.query.filter(Category.id==whichCategory).one_or_none()
-      selection = Question.query.filter(Question.category==whichCategory).all()
-      current_questions = paginate_questions(request,selection)
+    if(whichCategory !=0): 
+      selection = Question.query.filter(Question.category==str(whichCategory)).all()
+      current_questions = paginate_questions(request,selection) 
 
       #not found questions for this category
       if (len(selection)==0):
-        return jsonify({
-        'success':True,
-        'questions':'no questions added yet'
-        })
+        abort(404)
 
-      rand = random.randrange(1, len(selection),1) 
-      row = current_questions[rand]
+      # rand = random.randrange(1,len(selection),1) 
+      # row = current_questions[rand] 
+      
+      # sample will return random questions without repeat only in the range of len(selection)
+      rand=random.sample(current_questions,len(selection))
+
+      def return_random_questions(rand):
+        i = 0
+        while i <len(selection):
+          row =rand[i]['question']
+          print(row)
+          i += 1
+          return row 
+
+      row=return_random_questions(rand) 
 
       return jsonify({
         'success':True, 
-        'questions':row
-      })
+        'question':row
+      }) 
 
     elif whichCategory is None:
-      abort(404)
+      abort(404) 
 
     # All categories
     else: 
@@ -262,23 +275,28 @@ def create_app(test_config=None):
 
       # no questions added 
       if (len(selection)==0):
-        return jsonify({
-        'success':True,
-        'questions':'no questions added yet'
-      })
+        abort(404)
+       
+      # rand = random.randrange(1, len(selection),1) 
+      # row = current_questions[rand] 
 
-      rand = random.randrange(1, len(selection),1) 
-      if(rand=list index out of range):
+      # sample will return random questions without repeat only in the range of len(selection)
+      rand=random.sample(current_questions,len(selection))
 
-      row = current_questions[rand]
+      def return_random_questions(rand):
+        i = 0
+        while i <len(selection):
+          row =rand[i]['question']
+          print(row)
+          i += 1
+          return row 
+
+      row=return_random_questions(rand)
 
       return jsonify({
-        'success':True,
+        'success':True,  
         'question':row
-      })
-
-    # except:
-    #   abort(422)
+      }) 
 
   '''
   @TODO:

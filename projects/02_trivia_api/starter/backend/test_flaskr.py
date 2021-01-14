@@ -97,6 +97,41 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'],False)
         self.assertEqual(data['message'], 'method not allowed')
 
+    # search questions
+    def test_search_question(self):
+        res= self.client().post('/searchQuestions',json={'searchTerm':"name"})
+        data=json.loads(res.data)
+
+        self.assertEqual(res.status_code,200)
+        self.assertEqual(data['success'],True)
+        self.assertTrue(len(data['questions']))
+
+    def test_404_if_question_search_not_allowed(self):
+        res=self.client().post('/searchQuestions/200', json={'searchTerm':'box'})
+        data=json.loads(res.data)
+
+        self.assertEqual(res.status_code,404)
+        self.assertEqual(data['success'],False)
+        self.assertEqual(data['message'], 'resource not found')
+
+    # get questions for specific category
+    def test_get_category_questions(self):
+        res= self.client().get('/categories/2/questions')
+        data=json.loads(res.data)
+
+        self.assertEqual(res.status_code,200)
+        self.assertEqual(data['success'],True)
+        self.assertTrue(data['total_questions'])
+        self.assertTrue(len(data['questions'])) 
+
+    def test_422_sent_requesting_invalid_category_questions(self):
+        res=self.client().get('/categories/200/questions')
+        data=json.loads(res.data)
+
+        self.assertEqual(res.status_code,422)
+        self.assertEqual(data['success'],False)
+        self.assertTrue(data['message'], 'unprocessable')
+
 # Make the tests conveniently executable
 if __name__ == "__main__":
     unittest.main()
