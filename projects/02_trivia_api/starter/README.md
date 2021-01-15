@@ -305,7 +305,7 @@ action painting?"
 ```
 #### POST /quizzes
 - General:
-    - Creates a new quiz using the quiz category(0 if want all), previous questions array. Returns the question and success value. 
+    - Creates a new quiz using the quiz category(0 if want all), previous questions array. Returns random question for specific category or all if it's not specified(without repeat) and success value. 
 - `curl http://127.0.0.1:5000/quizzes -X POST -H "Content-Type: application/json" -d '{"quiz_category":2,"previous_questions":[]}'`
 ```
 {
