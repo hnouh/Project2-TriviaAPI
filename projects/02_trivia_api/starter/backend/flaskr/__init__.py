@@ -246,7 +246,7 @@ def create_app(test_config=None):
 
       # rand = random.randrange(1,len(selection),1) 
       # row = current_questions[rand] 
-      
+
       # sample will return random questions without repeat only in the range of len(selection)
       rand=random.sample(current_questions,len(selection))
 
