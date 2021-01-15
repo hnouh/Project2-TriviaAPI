@@ -67,6 +67,23 @@ The API will return three error types when requests fail:
 ### Endpoints 
 #### GET /questions
 - General:
+    - Returns a list of categories, success value. 
+- Sample: `curl http://127.0.0.1:5000/categories`
+```
+{
+  "categories": {
+    "1": "Science",
+    "2": "Art",
+    "3": "Geography",
+    "4": "History",
+    "5": "Entertainment",
+    "6": "Sports"
+  },
+  "success": true
+}
+```
+#### GET /questions
+- General:
     - Returns a list of question objects, success value, total number of questions, categories
     - Results are paginated in groups of 10. Include a request argument to choose page number, starting from 1. 
 - Sample: `curl http://127.0.0.1:5000/questions`
@@ -288,7 +305,7 @@ action painting?"
 ```
 #### POST /quizzes
 - General:
-    - Creates a new quiz using the quiz_category(0 if want all), previous_questions. Returns the question and success value. 
+    - Creates a new quiz using the quiz category(0 if want all), previous questions array. Returns the question and success value. 
 - `curl http://127.0.0.1:5000/quizzes -X POST -H "Content-Type: application/json" -d '{"quiz_category":2,"previous_questions":[]}'`
 ```
 {
