@@ -245,7 +245,7 @@ def create_app(test_config=None):
         body = request.get_json()
         whichCategory = body.get('quiz_category')
         previousQuestions = body.get('previous_questions')
-        # try:
+
         # get questions for specific category
         if(whichCategory != 0):
             selection = Question.query.filter(
