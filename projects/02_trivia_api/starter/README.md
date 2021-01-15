@@ -65,7 +65,7 @@ The API will return three error types when requests fail:
 - 422: unprocessable
 
 ### Endpoints 
-#### GET /questions
+#### GET /categories
 - General:
     - Returns a list of categories, success value. 
 - Sample: `curl http://127.0.0.1:5000/categories`
